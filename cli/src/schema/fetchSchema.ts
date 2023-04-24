@@ -88,7 +88,7 @@ export function fetchSchemaWithRetry(args: Parameters<typeof fetchSchema>[0]) {
         try {
             return fetchSchema({ ...args, usePost })
         } catch (e) {
-            console.log(e?.['message'])
+            // console.log(e?.['message'])
         }
     }
     return null

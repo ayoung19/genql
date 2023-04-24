@@ -50,8 +50,7 @@ export const schemaTask = (config: Config): ListrTask => {
                     assertValidSchema(ctx.schema)
                 } catch (e) {
                     if (
-                        e &&
-                        e['message'] === 'Query root type must be provided.'
+                        e
                     )
                         return
                     throw e

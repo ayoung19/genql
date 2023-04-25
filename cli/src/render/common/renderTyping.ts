@@ -5,22 +5,18 @@ const render = (
   type: GraphQLOutputType | GraphQLInputType,
   nonNull: boolean,
   root: boolean,
-  undefinableValues: boolean,
-  undefinableFields: boolean,
   wrap: (x: string) => string = x => x
 ): string => {
     
   if (root) {
-    if (undefinableFields) {
+    
       if (isNonNullType(type)) {
-        return `: ${render(type.ofType, true, false, undefinableValues, undefinableFields, wrap)}`
+        return `: ${render(type.ofType, true, false, wrap)}`
       } else {
-        const rendered = render(type, true, false, undefinableValues, undefinableFields, wrap)
-        return undefinableValues ? `?: ${rendered}` : `?: (${rendered} | null)`
+        const rendered = render(type, true, false, wrap)
+        return `?: (${rendered} | null)`
       }
-    } else {
-      return `: ${render(type, false, false, undefinableValues, undefinableFields, wrap)}`
-    }
+    
   }
 
   if (isNamedType(type)) {
@@ -33,30 +29,22 @@ const render = (
 
     const typing = wrap(typeName)
 
-    if (undefinableValues) {
-      return nonNull ? typing : `(${typing} | undefined)`
-    } else {
-      return nonNull ? typing : `(${typing} | null)`
-    }
+  
+    return nonNull ? typing : `(${typing} | null)`
+    
   }
 
   if (isListType(type)) {
-    const typing = `${render(type.ofType, false, false, undefinableValues, undefinableFields, wrap)}[]`
+    const typing = `${render(type.ofType, false, false, wrap)}[]`
 
-    if (undefinableValues) {
-      return nonNull ? typing : `(${typing} | undefined)`
-    } else {
-      return nonNull ? typing : `(${typing} | null)`
-    }
+    
+    return nonNull ? typing : `(${typing} | null)`
+    
   }
 
-  return render((type as GraphQLNonNull<any>).ofType, true, false, undefinableValues, undefinableFields, wrap)
+  return render((type as GraphQLNonNull<any>).ofType, true, false, wrap)
 }
 
 export const renderTyping = (
   type: GraphQLOutputType | GraphQLInputType,
-  undefinableValues: boolean,
-  undefinableFields: boolean,
-  root = true,
-  wrap: any = undefined
-) => render(type, false, root, undefinableValues, undefinableFields, wrap)
+) => render(type, false, true,  )
